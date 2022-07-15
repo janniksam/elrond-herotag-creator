@@ -12,6 +12,7 @@ namespace Elrond.Herotag.Creator.Web.BotWorkflows
     {
         private readonly IBotManager _botManager;
         private readonly IUserContextManager _userContextManager;
+        private readonly IRegisterHerotagInputManager _registerHerotagInputManager;
         private readonly ILogger<ElrondHerotagCreatorBotService> _logger;
         private readonly CancellationTokenSource _cts;
         private readonly IElrondApiService _elrondApiService;
@@ -20,12 +21,14 @@ namespace Elrond.Herotag.Creator.Web.BotWorkflows
         public ElrondHerotagCreatorBotService(
             IBotManager botManager,
             IUserContextManager userContextManager,
+            IRegisterHerotagInputManager registerHerotagInputManager,
             IElrondApiService elrondApiService,
             ITransactionGenerator transactionGenerator,
             ILogger<ElrondHerotagCreatorBotService> logger)
         {
             _botManager = botManager;
             _userContextManager = userContextManager;
+            _registerHerotagInputManager = registerHerotagInputManager;
             _elrondApiService = elrondApiService;
             _transactionGenerator = transactionGenerator;
             _logger = logger;
@@ -102,7 +105,7 @@ namespace Elrond.Herotag.Creator.Web.BotWorkflows
             var botWorkflows = new IBotProcessor[]
             {
                 startmenuWorkflow,
-                new RegisterHeroTagWorkflow(_userContextManager, _elrondApiService, _transactionGenerator)
+                new RegisterHeroTagWorkflow(_userContextManager, _registerHerotagInputManager, _elrondApiService, _transactionGenerator)
             };
 
             return botWorkflows;

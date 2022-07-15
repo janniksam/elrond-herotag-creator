@@ -1,6 +1,8 @@
-﻿namespace Elrond.Herotag.Creator.Web.Services;
+﻿using Erdcsharp.Configuration;
+
+namespace Elrond.Herotag.Creator.Web.Services;
 
 public interface ITransactionGenerator
 {
-    Task<string> GenerateRegisterHerotagUrlAsync(string herotag);
+    Task<string> GenerateRegisterHerotagUrlAsync(string herotag, Network network);
 }

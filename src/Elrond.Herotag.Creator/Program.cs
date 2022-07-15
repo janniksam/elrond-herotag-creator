@@ -32,6 +32,7 @@ builder.Services.AddSingleton<IBotManager, BotManager>();
 builder.Services.AddSingleton<IUserContextManager, UserContextManager>();
 builder.Services.AddTransient<IElrondApiService, ElrondApiService>();
 builder.Services.AddTransient<ITransactionGenerator, TransactionGenerator>();
+builder.Services.AddTransient<IRegisterHerotagInputManager, RegisterHerotagInputManager>();
 builder.Services.AddHostedService<ElrondHerotagCreatorBotService>();
 
 var app = builder.Build();

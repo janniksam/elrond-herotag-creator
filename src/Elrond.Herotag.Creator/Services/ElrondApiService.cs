@@ -9,7 +9,6 @@ namespace Elrond.Herotag.Creator.Web.Services;
 
 public class ElrondApiService : IElrondApiService
 {
-    private const string MainnetProxy = "https://api.elrond.com";
     private readonly IMemoryCache _memoryCache;
     private readonly ILogger<ElrondApiService> _logger;
     private record NetworkConfigCacheKey;
@@ -22,14 +21,14 @@ public class ElrondApiService : IElrondApiService
         _logger = logger;
     }
 
-    public async Task<ConfigDataDto> GetNetworkConfigAsync()
+    public async Task<ConfigDataDto> GetNetworkConfigAsync(Network network)
     {
         var cacheKey = new NetworkConfigCacheKey();
 
         if (!_memoryCache.TryGetValue(cacheKey, out ConfigDataDto networkConfig))
         {
             var client = new HttpClient();
-            var provider = new ElrondProvider(client, new ElrondNetworkConfiguration(Network.MainNet));
+            var provider = new ElrondProvider(client, new ElrondNetworkConfiguration(network));
 
             networkConfig = await provider.GetNetworkConfig().ConfigureAwait(false);
 
@@ -41,12 +40,12 @@ public class ElrondApiService : IElrondApiService
         return networkConfig;
     }
 
-    public async Task<bool> IsHerotagAvailable(string herotag)
+    public async Task<bool> IsHerotagAvailable(string herotag, Network network)
     {
         try
         {
             var client = new HttpClient();
-            var requestUrl = $"{MainnetProxy}/usernames/{herotag}";
+            var requestUrl = $"{GetApiProxy(network)}/usernames/{herotag}";
             var accountRaw = await client.GetStringAsync(requestUrl).ConfigureAwait(false);
             var account = JsonConvert.DeserializeObject<AccountDto>(accountRaw);
             return account == null ||
@@ -61,5 +60,16 @@ public class ElrondApiService : IElrondApiService
             _logger.LogError(ex, $"An error occured in {nameof(IsHerotagAvailable)}");
             return false;
         }
+    }
+
+    private string GetApiProxy(Network network)
+    {
+        return network switch
+        {
+            Network.MainNet => "https://api.elrond.com",
+            Network.TestNet => "https://testnet-api.elrond.com",
+            Network.DevNet => "https://devnet-api.elrond.com",
+            _ => throw new ArgumentOutOfRangeException(nameof(network), network, null)
+        };
     }
 }
