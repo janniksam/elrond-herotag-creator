@@ -83,8 +83,8 @@ public class StartMenuWorkflow : IBotProcessor, IStartMenuNavigation
 
         await client.SendTextMessageAsync(
             chatId,
-            "Welcome to the Elrond Hero Tag Creator.\n\n" +
-            "This bot allows you to register a hero tag for any Elrond wallet.\n\n" +
+            "Welcome to the Elrond Herotag Creator.\n\n" +
+            "This bot allows you to register a herotag for any Elrond wallet.\n\n" +
             "Please choose an action:",
             replyMarkup: new InlineKeyboardMarkup(buttons),
             cancellationToken: ct);
